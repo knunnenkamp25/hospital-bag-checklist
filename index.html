@@ -34,6 +34,28 @@
     font-size: 0.95rem; color: var(--gray);
   }
 
+  /* Tabs */
+  .tab-bar {
+    max-width: 800px; margin: 0 auto 0;
+    display: flex; gap: 0; border-bottom: 3px solid #E8EAF6;
+  }
+  .tab-btn {
+    flex: 1; padding: 14px 20px; font-size: 1rem; font-weight: 600;
+    background: var(--white); border: none; cursor: pointer;
+    color: var(--gray); transition: all 0.2s; position: relative;
+    border-radius: 10px 10px 0 0;
+  }
+  .tab-btn:hover { background: #F0F1FA; }
+  .tab-btn.active {
+    color: var(--navy); background: #E8EAF6;
+  }
+  .tab-btn.active::after {
+    content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+    height: 3px; background: var(--navy);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
   /* Progress bar */
   .progress-area {
     max-width: 800px; margin: 20px auto;
@@ -134,7 +156,7 @@
     background: var(--navy); border-color: var(--navy);
   }
   .checkbox.checked::after {
-    content: '✓'; color: white; font-size: 14px; font-weight: 700;
+    content: '\2713'; color: white; font-size: 14px; font-weight: 700;
   }
 
   .item-content { flex: 1; }
@@ -153,6 +175,57 @@
   .tag-med { background: var(--med-bg); color: var(--med); }
   .tag-low { background: var(--low-bg); color: var(--low); }
 
+  /* Go-Time Car Checklist */
+  .go-time-intro {
+    max-width: 800px; margin: 20px auto;
+    background: var(--white); border-radius: 12px;
+    padding: 24px 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    text-align: center;
+  }
+  .go-time-intro .emoji { font-size: 2.5rem; margin-bottom: 8px; }
+  .go-time-intro h2 { font-size: 1.3rem; color: var(--navy); margin-bottom: 6px; font-weight: 700; }
+  .go-time-intro p { font-size: 0.92rem; color: var(--gray); }
+
+  .go-time-progress {
+    max-width: 800px; margin: 16px auto;
+    background: var(--white); border-radius: 12px;
+    padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .go-time-progress .progress-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .go-time-list {
+    max-width: 800px; margin: 16px auto;
+    background: var(--white); border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .go-time-list .go-header {
+    padding: 14px 20px; background: #E8EAF6;
+    font-size: 1.05rem; color: var(--navy); font-weight: 600;
+  }
+  .go-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.15s, opacity 0.3s;
+  }
+  .go-item:last-child { border-bottom: none; }
+  .go-item:nth-child(even) { background: var(--light); }
+  .go-item.checked { opacity: 0.5; }
+  .go-item.checked .go-item-text { text-decoration: line-through; }
+  .go-item-icon { font-size: 1.4rem; flex-shrink: 0; width: 36px; text-align: center; }
+  .go-item-text { font-size: 1rem; font-weight: 500; flex: 1; }
+  .go-item-note { font-size: 0.82rem; color: var(--gray); font-style: italic; }
+
+  .go-item .checkbox {
+    width: 26px; height: 26px; border-radius: 6px;
+  }
+  .go-item .checkbox.checked::after {
+    font-size: 16px;
+  }
+
   /* Footer */
   .footer {
     max-width: 800px; margin: 30px auto 40px;
@@ -164,18 +237,29 @@
   @media (max-width: 600px) {
     .header h1 { font-size: 1.5rem; }
     .item { padding: 10px 14px; }
+    .go-item { padding: 14px 16px; }
     .section-header { padding: 12px 14px; }
     .progress-area { padding: 16px; }
     .legend { gap: 12px; font-size: 0.78rem; }
+    .tab-btn { padding: 12px 10px; font-size: 0.9rem; }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🏥 Hospital Bag Checklist</h1>
-  <div class="subtitle">Dad / Partner — Due May 19, 2026 — Pack by early May</div>
+  <h1>Hospital Bag Checklist</h1>
+  <div class="subtitle">Due May 19, 2026 — Pack by early May</div>
 </div>
+
+<!-- Tabs -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('packing')">Packing List</button>
+  <button class="tab-btn" onclick="switchTab('gotime')">Go Time</button>
+</div>
+
+<!-- ==================== TAB 1: PACKING LIST ==================== -->
+<div id="tab-packing" class="tab-content active">
 
 <div class="progress-area">
   <div class="progress-header">
@@ -188,10 +272,10 @@
   <div class="filter-row">
     <span class="label">Filter:</span>
     <button class="filter-btn active-all" data-filter="all" onclick="setFilter('all')">All</button>
-    <button class="filter-btn" data-filter="high" onclick="setFilter('high')">🔴 High</button>
-    <button class="filter-btn" data-filter="med" onclick="setFilter('med')">🟠 Medium</button>
-    <button class="filter-btn" data-filter="low" onclick="setFilter('low')">🟢 Low</button>
-    <button class="filter-btn" data-filter="unchecked" onclick="setFilter('unchecked')">⬜ Remaining</button>
+    <button class="filter-btn" data-filter="high" onclick="setFilter('high')">High</button>
+    <button class="filter-btn" data-filter="med" onclick="setFilter('med')">Medium</button>
+    <button class="filter-btn" data-filter="low" onclick="setFilter('low')">Low</button>
+    <button class="filter-btn" data-filter="unchecked" onclick="setFilter('unchecked')">Remaining</button>
   </div>
 </div>
 
@@ -204,39 +288,79 @@
 <div id="sections"></div>
 
 <div class="footer">
-  Pro tip: Pack the bag by 36–37 weeks — babies don't always wait for their due date! 👶
+  Pro tip: Pack the bag by 36-37 weeks — babies don't always wait for their due date!
+</div>
+
+</div>
+
+<!-- ==================== TAB 2: GO TIME ==================== -->
+<div id="tab-gotime" class="tab-content">
+
+<div class="go-time-intro">
+  <div class="emoji">🚗</div>
+  <h2>It's Go Time!</h2>
+  <p>Run through this before you walk out the door. Deep breath — you've got this.</p>
+</div>
+
+<div class="go-time-progress">
+  <div class="progress-header">
+    <span class="label">Ready to Go</span>
+    <span class="count" id="goProgressCount">0 / 0 done</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="goProgressBar" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="go-time-list">
+  <div class="go-header">Load the Car</div>
+  <div id="goItems-car"></div>
+</div>
+
+<div class="go-time-list">
+  <div class="go-header">Notify Pet Sitters</div>
+  <div id="goItems-notify"></div>
+</div>
+
+<div class="go-time-list">
+  <div class="go-header">Grab & Go</div>
+  <div id="goItems-grab"></div>
+</div>
+
+<div class="footer">
+  You're going to be an amazing dad. Now go meet your baby girl!
+</div>
+
 </div>
 
 <script>
+// ==================== PACKING LIST DATA ====================
 const DATA = [
   { section: "Documents & Essentials", items: [
     { text: "Photo ID (driver's license)", priority: "high" },
     { text: "Insurance card(s)", priority: "high" },
     { text: "Hospital pre-registration paperwork", priority: "high", note: "Confirm this is done before due date" },
     { text: "Birth plan (if you have one)", priority: "med", note: "Printed copy for the nurses' station" },
-    { text: "Phone charger — long cable (6ft+)", priority: "high" },
+    { text: "Phone charger \u2014 long cable (6ft+)", priority: "high" },
     { text: "Portable battery pack", priority: "med" },
     { text: "Extension cord", priority: "med", note: "Hospital rooms have limited outlets" },
     { text: "Pen", priority: "med", note: "You'll sign a surprising amount of paperwork" },
     { text: "Cash / card for parking, cafeteria, vending", priority: "med" },
   ]},
-  { section: "Clothing (pack for 1–3 days)", items: [
-    { text: "2–3 changes of comfortable clothes (sweats, athletic wear)", priority: "high" },
+  { section: "Clothing (pack for 1\u20133 days)", items: [
+    { text: "2\u20133 changes of comfortable clothes (sweats, athletic wear)", priority: "high" },
     { text: "Athletic shorts", priority: "med" },
     { text: "Nicer shorts", priority: "med", note: "For photos and visitors" },
-    { text: "Hoodie or light jacket", priority: "high", note: "Hospitals run cold — plan for it" },
+    { text: "Hoodie or light jacket", priority: "high", note: "Hospitals run cold \u2014 plan for it" },
     { text: "Slip-on shoes", priority: "med" },
-
-    { text: "Underwear & socks (2–3 pairs each)", priority: "high" },
-    { text: "Going-home outfit", priority: "med", note: "Fresh clothes for the drive home — there will be photos" },
+    { text: "Underwear & socks (2\u20133 pairs each)", priority: "high" },
+    { text: "Going-home outfit", priority: "med", note: "Fresh clothes for the drive home \u2014 there will be photos" },
     { text: "Girl dad hat", priority: "low" },
     { text: "Laundry bag", priority: "med", note: "Keep dirty clothes separate and contained" },
   ]},
   { section: "Comfort & Sleep", items: [
     { text: "Your own pillow", priority: "high", note: "Hospital pillows are notoriously bad; use a non-white pillowcase so it doesn't get mixed in with hospital linens" },
     { text: "Small blanket", priority: "low", note: "Helpful if you're sleeping in a recliner or fold-out" },
-
-
   ]},
   { section: "Toiletries", items: [
     { text: "Toothbrush & toothpaste", priority: "high" },
@@ -255,7 +379,7 @@ const DATA = [
   ]},
   { section: "Food & Drinks", items: [
     { text: "Refillable water bottle", priority: "high" },
-    { text: "Granola bars / protein bars", priority: "high", note: "Labor can be long — cafeteria will close" },
+    { text: "Granola bars / protein bars", priority: "high", note: "Labor can be long \u2014 cafeteria will close" },
     { text: "Trail mix / nuts", priority: "med" },
     { text: "Beef jerky / dried fruit", priority: "low" },
     { text: "Crackers / pretzels", priority: "med" },
@@ -265,7 +389,7 @@ const DATA = [
   ]},
   { section: "Entertainment & Sanity", items: [
     { text: "Headphones", priority: "med" },
-    { text: "Book, tablet, or downloaded shows/movies", priority: "med", note: "Hospital Wi-Fi can be spotty — download in advance" },
+    { text: "Book, tablet, or downloaded shows/movies", priority: "med", note: "Hospital Wi-Fi can be spotty \u2014 download in advance" },
     { text: "Bluetooth speaker", priority: "low", note: "Nice for playing music during labor if she wants it" },
     { text: "Laptop + charger", priority: "med" },
     { text: "Journal", priority: "low", note: "Write down birth details, doctor instructions, and first moments" },
@@ -282,31 +406,51 @@ const DATA = [
   { section: "Camera & Memories", items: [
     { text: "Clear phone storage ahead of time", priority: "high", note: "You will take more photos/videos than you expect" },
     { text: "Camera + charged battery (optional)", priority: "low", note: "Only if you prefer a dedicated camera" },
-
-
   ]},
   { section: "Car & Going Home", items: [
-    { text: "Car seat — installed and inspected", priority: "high", note: "Do this well before the due date; many fire stations will check it free" },
+    { text: "Car seat \u2014 installed and inspected", priority: "high", note: "Do this well before the due date; many fire stations will check it free" },
     { text: "Confirm parking situation at your hospital", priority: "med", note: "Know where to park so you're not circling a garage during labor" },
   ]},
 ];
 
-// State
+// ==================== GO TIME DATA ====================
+const GO_DATA = [
+  { group: "car", items: [
+    { text: "Baby hospital bag", icon: "\uD83D\uDC76" },
+    { text: "Maggie's hospital bag", icon: "\uD83E\uDDF3" },
+    { text: "Ken's hospital bag", icon: "\uD83C\uDFD2" },
+    { text: "Car seat + base", icon: "\uD83D\uDE97", note: "Double-check it's locked in tight" },
+  ]},
+  { group: "notify", items: [
+    { text: "Notify RB & Debbie for Wally", icon: "\uD83D\uDC36" },
+    { text: "Notify Ken & Giovanna for Bella", icon: "\uD83D\uDC31" },
+  ]},
+  { group: "grab", items: [
+    { text: "Wallets", icon: "\uD83D\uDCB3" },
+    { text: "Keys", icon: "\uD83D\uDD11" },
+    { text: "Phones", icon: "\uD83D\uDCF1" },
+  ]},
+];
+
+// ==================== STATE ====================
 let checkedItems = {};
+let goCheckedItems = {};
 let currentFilter = 'all';
 
-// Load saved state
-try {
-  const saved = JSON.parse(sessionStorage.getItem('hospitalBagState') || '{}');
-  checkedItems = saved;
-} catch(e) {}
+function getItemId(si, ii) { return `item-${si}-${ii}`; }
+function getGoItemId(group, ii) { return `go-${group}-${ii}`; }
 
-function saveState() {
-  // Use a simple in-memory approach; state persists for the session
+// ==================== TABS ====================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  if (tab === 'packing') btns[0].classList.add('active');
+  else btns[1].classList.add('active');
 }
 
-function getItemId(si, ii) { return `item-${si}-${ii}`; }
-
+// ==================== PACKING LIST ====================
 function toggleItem(si, ii) {
   const id = getItemId(si, ii);
   checkedItems[id] = !checkedItems[id];
@@ -340,7 +484,6 @@ function render() {
       if (isChecked) { sectionChecked++; totalChecked++; }
       totalItems++;
 
-      // Filtering
       let hidden = false;
       if (currentFilter === 'high' && item.priority !== 'high') hidden = true;
       if (currentFilter === 'med' && item.priority !== 'med') hidden = true;
@@ -370,7 +513,7 @@ function render() {
           <h2>${sec.section}</h2>
           <div>
             <span class="section-count">${sectionChecked}/${sectionTotal} packed</span>
-            <span class="chevron">▼</span>
+            <span class="chevron">\u25BC</span>
           </div>
         </div>
         <div class="section-body">${itemsHtml}</div>
@@ -379,12 +522,10 @@ function render() {
 
   container.innerHTML = html;
 
-  // Progress
   const pct = totalItems > 0 ? Math.round((totalChecked / totalItems) * 100) : 0;
   document.getElementById('progressBar').style.width = pct + '%';
   document.getElementById('progressCount').textContent = `${totalChecked} / ${totalItems} packed`;
 
-  // Filter buttons
   document.querySelectorAll('.filter-btn').forEach(btn => {
     const f = btn.dataset.filter;
     btn.className = 'filter-btn';
@@ -398,7 +539,46 @@ function render() {
   });
 }
 
+// ==================== GO TIME ====================
+function toggleGoItem(group, ii) {
+  const id = getGoItemId(group, ii);
+  goCheckedItems[id] = !goCheckedItems[id];
+  renderGoTime();
+}
+
+function renderGoTime() {
+  let totalItems = 0, totalChecked = 0;
+
+  GO_DATA.forEach(section => {
+    const container = document.getElementById('goItems-' + section.group);
+    let html = '';
+    section.items.forEach((item, ii) => {
+      const id = getGoItemId(section.group, ii);
+      const isChecked = !!goCheckedItems[id];
+      if (isChecked) totalChecked++;
+      totalItems++;
+
+      html += `
+        <div class="go-item ${isChecked ? 'checked' : ''}" onclick="toggleGoItem('${section.group}',${ii})">
+          <div class="checkbox ${isChecked ? 'checked' : ''}"></div>
+          <div class="go-item-icon">${item.icon}</div>
+          <div class="item-content">
+            <div class="go-item-text">${item.text}</div>
+            ${item.note ? `<div class="go-item-note">${item.note}</div>` : ''}
+          </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+  });
+
+  const pct = totalItems > 0 ? Math.round((totalChecked / totalItems) * 100) : 0;
+  document.getElementById('goProgressBar').style.width = pct + '%';
+  document.getElementById('goProgressCount').textContent = `${totalChecked} / ${totalItems} done`;
+}
+
+// ==================== INIT ====================
 render();
+renderGoTime();
 </script>
 </body>
 </html>
