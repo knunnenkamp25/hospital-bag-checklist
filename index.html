@@ -156,7 +156,7 @@
     background: var(--navy); border-color: var(--navy);
   }
   .checkbox.checked::after {
-    content: '\2713'; color: white; font-size: 14px; font-weight: 700;
+    content: '\u2713'; color: white; font-size: 14px; font-weight: 700;
   }
 
   .item-content { flex: 1; }
@@ -174,6 +174,46 @@
   .tag-high { background: var(--high-bg); color: var(--high); }
   .tag-med { background: var(--med-bg); color: var(--med); }
   .tag-low { background: var(--low-bg); color: var(--low); }
+
+  /* Add Item Form */
+  .add-item-area {
+    max-width: 800px; margin: 20px auto;
+    background: var(--white); border-radius: 12px;
+    padding: 18px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .add-item-area h3 {
+    font-size: 0.95rem; color: var(--navy); font-weight: 600; margin-bottom: 10px;
+  }
+  .add-item-row {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .add-item-row input[type="text"] {
+    flex: 1; min-width: 160px; padding: 8px 12px; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .add-item-row input[type="text"]:focus { border-color: var(--navy); }
+  .add-item-row select {
+    padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 0.85rem; background: var(--white); cursor: pointer; font-family: inherit;
+  }
+  .add-item-row .add-btn {
+    padding: 8px 18px; border: none; border-radius: 8px; font-size: 0.88rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+    background: var(--navy); color: white;
+  }
+  .add-item-row .add-btn:hover { background: #0D1559; }
+  .custom-item-tag {
+    display: inline-block; font-size: 0.65rem; font-weight: 600;
+    padding: 1px 5px; border-radius: 3px; margin-left: 6px;
+    background: #E8EAF6; color: var(--navy); vertical-align: middle;
+  }
+  .delete-btn {
+    margin-left: auto; padding: 2px 8px; border: none; background: none;
+    color: #BDBDDB; cursor: pointer; font-size: 1.1rem; transition: color 0.2s;
+    flex-shrink: 0;
+  }
+  .delete-btn:hover { color: var(--high); }
 
   /* Go-Time Car Checklist */
   .go-time-intro {
@@ -258,7 +298,7 @@
   <button class="tab-btn" onclick="switchTab('gotime')">Go Time</button>
 </div>
 
-<!-- ==================== TAB 1: PACKING LIST ==================== -->
+<!-- ====================== TAB 1: PACKING LIST ======================= -->
 <div id="tab-packing" class="tab-content active">
 
 <div class="progress-area">
@@ -280,26 +320,41 @@
 </div>
 
 <div class="legend">
-  <span><span class="dot dot-high"></span> HIGH — Don't leave without it</span>
+  <span><span class="dot dot-high"></span> HIGH — Don’t leave without it</span>
   <span><span class="dot dot-med"></span> MED — Strongly recommended</span>
   <span><span class="dot dot-low"></span> LOW — Nice to have</span>
 </div>
 
 <div id="sections"></div>
 
+<div class="add-item-area">
+  <h3>+ Add an Item</h3>
+  <div class="add-item-row">
+    <input type="text" id="newItemText" placeholder="Item name..." onkeydown="if(event.key==='Enter')addCustomItem()">
+    <input type="text" id="newItemNote" placeholder="Note (optional)" style="max-width:200px" onkeydown="if(event.key==='Enter')addCustomItem()">
+    <select id="newItemPriority">
+      <option value="high">High</option>
+      <option value="med" selected>Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <select id="newItemSection"></select>
+    <button class="add-btn" onclick="addCustomItem()">Add</button>
+  </div>
+</div>
+
 <div class="footer">
-  Pro tip: Pack the bag by 36-37 weeks — babies don't always wait for their due date!
+  Pro tip: Pack the bag by 36-37 weeks — babies don’t always wait for their due date!
 </div>
 
 </div>
 
-<!-- ==================== TAB 2: GO TIME ==================== -->
+<!-- ======================= TAB 2: GO TIME ======================= -->
 <div id="tab-gotime" class="tab-content">
 
 <div class="go-time-intro">
   <div class="emoji">🚗</div>
-  <h2>It's Go Time!</h2>
-  <p>Run through this before you walk out the door. Deep breath — you've got this.</p>
+  <h2>It’s Go Time!</h2>
+  <p>Run through this before you walk out the door. Deep breath — you’ve got this.</p>
 </div>
 
 <div class="go-time-progress">
@@ -328,23 +383,24 @@
 </div>
 
 <div class="footer">
-  You're going to be an amazing dad. Now go meet your baby girl!
+  You’re going to be an amazing dad. Now go meet your baby girl!
 </div>
 
 </div>
 
 <script>
-// ==================== PACKING LIST DATA ====================
+// ====================== PACKING LIST DATA =======================
+
 const DATA = [
   { section: "Documents & Essentials", items: [
-    { text: "Photo ID (driver's license)", priority: "high" },
+    { text: "Photo ID (driver\u2019s license)", priority: "high" },
     { text: "Insurance card(s)", priority: "high" },
     { text: "Hospital pre-registration paperwork", priority: "high", note: "Confirm this is done before due date" },
-    { text: "Birth plan (if you have one)", priority: "med", note: "Printed copy for the nurses' station" },
+    { text: "Birth plan (if you have one)", priority: "med", note: "Printed copy for the nurses\u2019 station" },
     { text: "Phone charger \u2014 long cable (6ft+)", priority: "high" },
     { text: "Portable battery pack", priority: "med" },
     { text: "Extension cord", priority: "med", note: "Hospital rooms have limited outlets" },
-    { text: "Pen", priority: "med", note: "You'll sign a surprising amount of paperwork" },
+    { text: "Pen", priority: "med", note: "You\u2019ll sign a surprising amount of paperwork" },
     { text: "Cash / card for parking, cafeteria, vending", priority: "med" },
   ]},
   { section: "Clothing (pack for 1\u20133 days)", items: [
@@ -359,8 +415,8 @@ const DATA = [
     { text: "Laundry bag", priority: "med", note: "Keep dirty clothes separate and contained" },
   ]},
   { section: "Comfort & Sleep", items: [
-    { text: "Your own pillow", priority: "high", note: "Hospital pillows are notoriously bad; use a non-white pillowcase so it doesn't get mixed in with hospital linens" },
-    { text: "Small blanket", priority: "low", note: "Helpful if you're sleeping in a recliner or fold-out" },
+    { text: "Your own pillow", priority: "high", note: "Hospital pillows are notoriously bad; use a non-white pillowcase so it doesn\u2019t get mixed in with hospital linens" },
+    { text: "Small blanket", priority: "low", note: "Helpful if you\u2019re sleeping in a recliner or fold-out" },
   ]},
   { section: "Toiletries", items: [
     { text: "Toothbrush & toothpaste", priority: "high" },
@@ -409,30 +465,33 @@ const DATA = [
   ]},
   { section: "Car & Going Home", items: [
     { text: "Car seat \u2014 installed and inspected", priority: "high", note: "Do this well before the due date; many fire stations will check it free" },
-    { text: "Confirm parking situation at your hospital", priority: "med", note: "Know where to park so you're not circling a garage during labor" },
+    { text: "Confirm parking situation at your hospital", priority: "med", note: "Know where to park so you\u2019re not circling a garage during labor" },
   ]},
 ];
 
-// ==================== GO TIME DATA ====================
+// ======================= GO TIME DATA =======================
 const GO_DATA = [
   { group: "car", items: [
-    { text: "Baby hospital bag", icon: "\uD83D\uDC76" },
-    { text: "Maggie's hospital bag", icon: "\uD83E\uDDF3" },
-    { text: "Ken's hospital bag", icon: "\uD83C\uDFD2" },
-    { text: "Car seat + base", icon: "\uD83D\uDE97", note: "Double-check it's locked in tight" },
+    { text: "Baby hospital bag", icon: "👶" },
+    { text: "Maggie's hospital bag #1", icon: "🧳" },
+    { text: "Maggie's hospital bag #2", icon: "🧳" },
+    { text: "Maggie's hospital bag #3", icon: "🧳" },
+    { text: "Ken's hospital bag", icon: "🏒" },
+    { text: "Nurses baskets", icon: "🌁" },
+    { text: "Car seat + base", icon: "🚇", note: "Double-check it's locked in tight" },
   ]},
   { group: "notify", items: [
-    { text: "Notify RB & Debbie for Wally", icon: "\uD83D\uDC36" },
-    { text: "Notify Ken & Giovanna for Bella", icon: "\uD83D\uDC31" },
+    { text: "Notify RB & Debbie for Wally", icon: "🐶" },
+    { text: "Notify Ken & Giovanna for Bella", icon: "🐱" },
   ]},
   { group: "grab", items: [
-    { text: "Wallets", icon: "\uD83D\uDCB3" },
-    { text: "Keys", icon: "\uD83D\uDD11" },
-    { text: "Phones", icon: "\uD83D\uDCF1" },
+    { text: "Wallets", icon: "💳" },
+    { text: "Keys", icon: "🔑" },
+    { text: "Phones", icon: "📱" },
   ]},
 ];
 
-// ==================== STATE ====================
+// ======================= STATE =======================
 let checkedItems = {};
 let goCheckedItems = {};
 let currentFilter = 'all';
@@ -440,7 +499,7 @@ let currentFilter = 'all';
 function getItemId(si, ii) { return `item-${si}-${ii}`; }
 function getGoItemId(group, ii) { return `go-${group}-${ii}`; }
 
-// ==================== TABS ====================
+// ======================= TABS =======================
 function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -450,7 +509,7 @@ function switchTab(tab) {
   else btns[1].classList.add('active');
 }
 
-// ==================== PACKING LIST ====================
+// ======================= PACKING LIST =======================
 function toggleItem(si, ii) {
   const id = getItemId(si, ii);
   checkedItems[id] = !checkedItems[id];
@@ -494,15 +553,19 @@ function render() {
       const tagClass = `tag-${item.priority}`;
       const tagLabel = item.priority === 'high' ? 'HIGH' : item.priority === 'med' ? 'MED' : 'LOW';
 
+      const customTag = item.custom ? '<span class="custom-item-tag">CUSTOM</span>' : '';
+      const deleteBtn = item.custom ? `<button class="delete-btn" onclick="deleteCustomItem(${si},${ii})" title="Remove">&times;</button>` : '';
+
       itemsHtml += `
         <div class="item ${isChecked ? 'checked' : ''} ${hidden ? 'hidden' : ''}" onclick="toggleItem(${si},${ii})">
           <div class="checkbox ${isChecked ? 'checked' : ''}"></div>
           <div class="item-content">
             <div class="item-text">
-              <span class="tag ${tagClass}">${tagLabel}</span>${item.text}
+              <span class="tag ${tagClass}">${tagLabel}</span>${item.text}${customTag}
             </div>
             ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
           </div>
+          ${deleteBtn}
         </div>`;
     });
 
@@ -539,7 +602,7 @@ function render() {
   });
 }
 
-// ==================== GO TIME ====================
+// ======================= GO TIME =======================
 function toggleGoItem(group, ii) {
   const id = getGoItemId(group, ii);
   goCheckedItems[id] = !goCheckedItems[id];
@@ -576,7 +639,71 @@ function renderGoTime() {
   document.getElementById('goProgressCount').textContent = `${totalChecked} / ${totalItems} done`;
 }
 
-// ==================== INIT ====================
+// ======================= CUSTOM ITEMS =======================
+let customItems = {}; // keyed by section index, each value is an array
+
+function populateSectionDropdown() {
+  const sel = document.getElementById('newItemSection');
+  sel.innerHTML = '';
+  DATA.forEach((sec, si) => {
+    const opt = document.createElement('option');
+    opt.value = si;
+    opt.textContent = sec.section;
+    sel.appendChild(opt);
+  });
+}
+
+function addCustomItem() {
+  const textEl = document.getElementById('newItemText');
+  const noteEl = document.getElementById('newItemNote');
+  const prioEl = document.getElementById('newItemPriority');
+  const secEl = document.getElementById('newItemSection');
+
+  const text = textEl.value.trim();
+  if (!text) { textEl.focus(); return; }
+
+  const si = parseInt(secEl.value);
+  const newItem = {
+    text: text,
+    priority: prioEl.value,
+    note: noteEl.value.trim() || null,
+    custom: true
+  };
+
+  DATA[si].items.push(newItem);
+
+  textEl.value = '';
+  noteEl.value = '';
+  prioEl.value = 'med';
+  textEl.focus();
+  render();
+}
+
+function deleteCustomItem(si, ii) {
+  event.stopPropagation();
+  DATA[si].items.splice(ii, 1);
+  // Clean up checked state for items after the deleted one
+  const newChecked = {};
+  DATA.forEach((sec, s) => {
+    sec.items.forEach((item, i) => {
+      const newId = getItemId(s, i);
+      // For items before the deletion point, or in other sections, try to preserve state
+      if (s === si && i >= ii) {
+        // Items shifted down — map old index+1 to new index
+        const oldId = getItemId(s, i + 1);
+        if (checkedItems[oldId]) newChecked[newId] = true;
+      } else {
+        const oldId = getItemId(s, i);
+        if (checkedItems[oldId]) newChecked[newId] = true;
+      }
+    });
+  });
+  checkedItems = newChecked;
+  render();
+}
+
+// ======================= INIT =======================
+populateSectionDropdown();
 render();
 renderGoTime();
 </script>
